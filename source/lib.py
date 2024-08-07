@@ -1,10 +1,16 @@
 import logging
+import json
+import os
+
+import requests
+
+from constants import DATA_DIR
 
 LOGGER = logging.getLogger()
 
 
 class Liste(list):
-    def __int__(self, nom):
+    def __init__(self, nom):
         self.nom = nom
 
     def ajouter(self, element):
@@ -19,7 +25,9 @@ class Liste(list):
         return True
 
     def afficher(self):
-
+        print(f"Ma liste de {self.nom} :")
+        for element in self:
+            print(f" - {element}")
 
     def enlever(self, element):
         if element in self:
@@ -27,14 +35,19 @@ class Liste(list):
             return True
         return False
 
+    def sauvegarder(self):
+        chemin = os.path.join(DATA_DIR, f"{self.nom}.json")
+        if not os.path.exists(DATA_DIR):
+            os.makedirs(DATA_DIR)
+
+        with open(chemin, "w") as f:
+            json.dump(self, f, indent=4)
+        return True
+
 
 if __name__ == '__main__':
-    liste = Liste()
+    liste = Liste("courses")
     liste.ajouter("Pommes")
     liste.ajouter("Fraises")
-
-    print(liste)
-
-
-
-
+    liste.afficher()
+    liste.sauvegarder()
